@@ -18,6 +18,6 @@
 
 3. Open your browser and go to: http://localhost:6080/
 
-4. Drop any needed files at ~/sandbox-aulas so you can access them from the docker container. Also, if you need to save any files inside the docker container, save it into the /sandbox-aulas folder.
+4. Drop any needed files at ~/sandbox-aulas so you can access them from the docker container. Also, if you need to save any files inside the docker container, save it into the /sandbox-aulas folder otherwise any modifications will be wiped when you close your container.
 
-At the present state we have only arduino IDE installed. If you need any other software, please open an issue at.
+At the present moment we only have arduino IDE installed. If you need any other software, please open an issue at.
