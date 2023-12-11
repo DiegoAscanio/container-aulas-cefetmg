@@ -3,16 +3,15 @@
 1. Build this image:
 
     ```bash
-    docker build -t diegoascanio.github.com/container-aulas-cefetmg .
+    docker build -t github.com/diegoascanio:container-aulas-cefetmg .
     ```
 
 2. Run this image (your linux user needs to be at docker group):
     ```bash
     # if you're programming an arduino, you need to pass the device to the container
-    docker run -it --rm -p 6080:6080 -v ~/container-aulas-cefetmg:/container-aulas-cefetmg --ulimit nofile=65536:65536 --device /dev/ttyUSB0:/dev/ttyUSB0 diegoascanio.github.com/container-aulas-cefetmg
+    docker run -it --rm -p 6080:6080 -v ~/container-aulas-cefetmg:/container-aulas-cefetmg --ulimit nofile=65536:65536 --device /dev/ttyUSB0:/dev/ttyUSB0 github.com/diegoascanio:container-aulas-cefetmg
     # if you're not programming an arduino, you don't need to pass the device to the container
-    docker run -it --rm -p 6080:6080 -v ~/container-aulas-cefetmg:/container-aulas-cefetmg --ulimit nofile=65536:65536 diegoascanio.github.com/container-aulas-cefetmg
-    ```
+    docker run -it --rm -p 6080:6080 -v ~/container-aulas-cefetmg:/container-aulas-cefetmg --ulimit nofile=65536:65536 github.com/diegoascanio:container-aulas-cefetmg     ```
 
 3. Make ~/container-aulas-cefetmg folder accessible to your user:
     ```bash
