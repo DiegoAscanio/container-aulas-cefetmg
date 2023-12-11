@@ -1,4 +1,3 @@
-# Usando a imagem que eu criei como base
 FROM ubuntu:22.04
 
 # Instalando pacotes necessários
