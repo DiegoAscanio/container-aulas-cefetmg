@@ -1,75 +1,37 @@
-# Usando a imagem do Arch Linux como base 
-FROM archlinux:latest
+# Usando a imagem que eu criei como base
+FROM ubuntu:22.04
 
-# Atualizando o repositório de pacotes e instalando os pacotes necessários
-RUN pacman-key --init && pacman -Syu --noconfirm
-RUN pacman -S base-devel git wget python-numpy python-setuptools bash inetutils unzip --noconfirm
-RUN cat /etc/passwd
-RUN useradd -u 1000 ninguem -s /bin/bash
+# Instalando pacotes necessários
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt update
+RUN apt install -y python-is-python3 python3-numpy python3-xdg novnc xvfb vim tigervnc-standalone-server openbox libdata-dump-perl xterm wget xz-utils
 
-# Instalando o websockify
-RUN wget https://aur.archlinux.org/cgit/aur.git/snapshot/websockify.tar.gz && \
-    tar -xvf websockify.tar.gz && \
-    cd websockify && \
-    chown -R ninguem . && \
-    su ninguem -c "makepkg --noconfirm" && \
-    pacman -U *.pkg.tar.zst --noconfirm && \
-    cd .. && \
-    rm -rf websockify websockify.tar.gz
+# Instalando o arduino oriundo do site oficial
+RUN wget https://downloads.arduino.cc/arduino-1.8.19-linux64.tar.xz -O /tmp/arduino-1.8.19-linux64.tar.xz
+RUN tar -xvf /tmp/arduino-1.8.19-linux64.tar.xz --directory /opt/
+RUN rm -rf /tmp/arduino-1.8.19-linux64.tar.xz
+RUN /opt/arduino-1.8.19/install.sh
+RUN cd /
 
-# Instalando o novnc
-RUN wget https://aur.archlinux.org/cgit/aur.git/snapshot/novnc.tar.gz && \
-    tar -xvf novnc.tar.gz && \
-    cd novnc && \
-    chown -R ninguem . && \
-    su ninguem -c "makepkg --noconfirm" && \
-    pacman -U *.pkg.tar.zst --noconfirm && \
-    cd .. && \
-    rm -rf novnc novnc.tar.gz
-
-RUN pacman -S --noconfirm \
-    tigervnc \
-    xorg-server-xvfb \
-    xterm \
-    supervisor \
-    net-tools \
-    arduino \
-    python-xdg \
-    openbox ttf-dejavu ttf-liberation \
-    perl perl-data-dump perl-gtk3 \
-    vim
-
-# Instalando dependencia do aur perl-linux-desktopfiles
-RUN git clone https://aur.archlinux.org/perl-linux-desktopfiles.git /tmp/perl-linux-desktopfiles && \
-    cd /tmp/perl-linux-desktopfiles && \
-    chown -R ninguem . && \
-    su ninguem -c "makepkg --noconfirm" && \
-    pacman -U *.pkg.tar.zst --noconfirm && \
-    cd .. && \
-    rm -rf perl-linux-desktopfiles
-
-# Instalando o obmenu-generator
-RUN git clone https://aur.archlinux.org/obmenu-generator.git /tmp/obmenu-generator && \
-    cd /tmp/obmenu-generator && \
-    chown -R ninguem . && \
-    su ninguem -c "makepkg --noconfirm" && \
-    pacman -U *.pkg.tar.zst --noconfirm && \
-    cd .. && \
-    rm -rf obmenu-generator
-
-# Deletando o usuario
-RUN userdel ninguem
+# Instalando o obmenu-generator e suas dependencias
+RUN cd /tmp
+RUN wget http://ftp.linux.edu.lv/mxlinux/mx/repo/pool/main/p/perl-linux-desktopfiles/perl-linux-desktopfiles_0.25+git20201209-1~mx21+1_all.deb
+RUN wget https://download.opensuse.org/repositories/home:/Head_on_a_Stick:/obmenu-generator/Debian_11/all/obmenu-generator_0.91-1_all.deb
+RUN dpkg -i perl-linux-desktopfiles_0.25+git20201209-1~mx21+1_all.deb
+RUN dpkg -i obmenu-generator_0.91-1_all.deb
+RUN rm -rf *.deb
+RUN cd / 
 
 # Gerando um menu dinamico do openbox
 RUN mkdir -p /root/.config/openbox
 RUN cp -a /etc/xdg/openbox ~/.config/
-RUN obmenu-generator -p -i; exit 0
+RUN obmenu-generator -p; exit 0
 
 # Definindo variáveis de ambiente necessárias para o noVNC
 ENV DISPLAY=:0
 
 # Linkando o vnc.html para index.html no novnc
-RUN ln -s /usr/share/webapps/novnc/vnc.html /usr/share/webapps/novnc/index.html
+RUN ln -s /usr/share/novnc/vnc.html /usr/share/novnc/index.html
 
 # Expondo a porta do NOVNC
 EXPOSE 6080
@@ -80,6 +42,10 @@ EXPOSE 6080
 # Copiando o startup
 COPY startup.sh /startup.sh
 RUN chmod 755 /startup.sh
+
+# Limpando o cache do apt
+RUN apt install menu -y
+RUN apt clean
 
 # Iniciando o X11, o NOVNC e OPENBOX
 CMD /startup.sh

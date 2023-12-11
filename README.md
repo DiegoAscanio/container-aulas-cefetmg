@@ -8,7 +8,10 @@
 
 2. Run this image (your linux user needs to be at docker group):
     ```bash
-    docker run --privileged -it --rm -p 6080:6080 -v ~/sandbox-aulas:/sandbox-aulas ascanio/sandbox-aulas
+    # if you're programming an arduino, you need to pass the device to the container
+    docker run -it --rm -p 6080:6080 -v ~/sandbox-aulas:/sandbox-aulas --ulimit nofile=65536:65536 --device /dev/ttyUSB0:/dev/ttyUSB0 dunhill/sandbox
+    # if you're not programming an arduino, you don't need to pass the device to the container
+    docker run -it --rm -p 6080:6080 -v ~/sandbox-aulas:/sandbox-aulas --ulimit nofile=65536:65536 dunhill/sandbox
     ```
 
 3. Make ~/sandbox-aulas folder accessible to your user:
