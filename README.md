@@ -10,7 +10,7 @@ OR
 
 1. Pull this image from docker
     ```bash
-    docker pull diegascanio/cefetmg:container-aulas
+    docker pull diegoascanio/cefetmg:container-aulas
     ```
 
 2. Run this image (your linux user needs to be at docker group):
